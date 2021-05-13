@@ -27,6 +27,7 @@ for i, file in enumerate(tqdm(inputs_list)):
 
     # elif (i != 0 and i % files_num == 0) or i == len(inputs_list)-1:
     elif i == (len(inputs_list)-1):
+        # input
         t_input_data = np.array(train_input_data)
         # t_label_data = np.array(train_label_data)
         # single_sum = t_input_data.sum(axis=0)
@@ -34,9 +35,17 @@ for i, file in enumerate(tqdm(inputs_list)):
         input_std = np.std(t_input_data, axis=0)
 
         iuput_norm = np.array([input_avg, input_std])
-        np.savetxt('inputNorm.txt', iuput_norm, fmt="%f")
+        np.savetxt('InputNorm.txt', iuput_norm, fmt="%f")
 
-        # avg += input_avg
+        # input
+        t_label_data = np.array(train_label_data)
+        # t_label_data = np.array(train_label_data)
+        # single_sum = t_input_data.sum(axis=0)
+        output_avg = np.mean(t_label_data, axis=0)
+        output_std = np.std(t_label_data, axis=0)
+
+        output_norm = np.array([output_avg, output_std])
+        np.savetxt('OutputNorm.txt', output_norm, fmt="%f")
 
         # train_input_data = train_input_data.drop(train_input_data.index, inplace=False)
         # train_label_data = train_label_data.drop(train_label_data.index, inplace=False)

@@ -6,12 +6,12 @@ from torch.nn import init
 
 class Model(object):
     def __init__(self, input_size=926, hidden_size=256, output_size=618,
-                 batch_size=64):
+                 learning_rate=0.5, batch_size=64):
         super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
-        self.lr = 0.5
+        self.lr = learning_rate
         self.batch_size = batch_size
 
         self.model = FC(self.input_size, self.hidden_size, self.output_size)

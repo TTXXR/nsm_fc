@@ -7,7 +7,7 @@ import time
 
 import torch
 from fc import FC
-from utils import get_norm
+from utils.utils import get_norm
 from net import Model
 from torch import nn
 from torch.nn import init
@@ -16,11 +16,10 @@ from torch.autograd import Variable
 
 
 def train(net, inputs_list, num_epochs):
-    f = open("fcn/plots/bone_gating_256r_fc_record.txt", "w")
+    f = open("plots/0.1r_noOutScale_bone_gating_256h_fc_record.txt", "w")
     input_mean, input_std = get_norm("/home/rr/Downloads/nsm_data/utils/inputNorm.txt")
-    output_mean, output_std = get_norm("/home/rr/Downloads/nsm_data/bone_gating_WalkTrain/OutputNorm.txt")
+    output_mean, output_std = get_norm("/home/rr/Downloads/nsm_data/utils/OutputNorm.txt")
     input_mean, input_std = input_mean[0:926], input_std[0:926]
-    output_mean, output_std = output_mean[0:926], output_std[0:926]
 
     for epoch in range(num_epochs):
         train_input_data = pd.DataFrame()
@@ -75,9 +74,9 @@ def train(net, inputs_list, num_epochs):
         f.write(item)
         f.flush()
 
-        if epoch == 30:
-            torch.save(net.model.state_dict(), os.path.join("../models/", "fcn_fixedScale_"+str(epoch)+".pth"))
-            torch.save(net.optimizer.state_dict(), os.path.join("../models/", "fcn_fixedScale_opt_"+str(epoch)+".pth"))
+        if epoch == 60:
+            torch.save(net.model.state_dict(), os.path.join("models/", "fcn_fixedOutScale_"+str(epoch)+".pth"))
+            torch.save(net.optimizer.state_dict(), os.path.join("models/", "fcn_fixedOutScale_opt_"+str(epoch)+".pth"))
     f.close()
 
 
@@ -98,11 +97,11 @@ def test(net, input_data, label_data, train_size, loss_func, batch_size):
 
 if __name__ == '__main__':
     num_inputs, num_outputs, num_hiddens = 926, 618, 256
-    batch_size, num_epochs = 64, 40
+    learning_rate, batch_size, num_epochs = 0.1, 64, 200
     root_path = "/home/rr/Downloads/nsm_data/bone_gating_WalkTrain/"
 
     inputs_list = os.listdir(root_path + "Input/")
     inputs_list.sort(key=lambda x: int(x[:-4]))
 
-    net = Model(num_inputs, num_hiddens, num_outputs, batch_size)
+    net = Model(num_inputs, num_hiddens, num_outputs, learning_rate, batch_size)
     train(net, inputs_list, num_epochs)
