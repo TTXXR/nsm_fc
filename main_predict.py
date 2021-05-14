@@ -16,8 +16,18 @@ from torch.autograd import Variable
 from sklearn.preprocessing import StandardScaler
 
 
-def predict(net, input, label):
-    return net.model(input), label
+def predict(net, input, label, seq_flag=False):
+    if not seq_flag:
+        return net.model(input), label
+    else:
+        out = []
+        x = input[0]
+        for i in range(len(input)):
+            x = net.model(x)
+            out.append(x)
+            print(x)
+
+        return out, label
 
 
 if __name__ == '__main__':
@@ -53,6 +63,12 @@ if __name__ == '__main__':
     input_data = Variable(input_data.type(torch.FloatTensor).to(torch.device("cuda:0")))
     label_data = Variable(label_data.type(torch.FloatTensor).to(torch.device("cuda:0")))
 
-    pred, target = predict(net, input_data[-1:], label_data[-1:])
+    # single test
+    pred, target = predict(net, input_data[-10:], label_data[-10:])
+    loss = loss_func(pred, target).sum()
+    print(loss)
+
+    # sequence test
+    pred, target = predict(net, input_data[-10:], label_data[-10:], True)
     loss = loss_func(pred, target).sum()
     print(loss)

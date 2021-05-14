@@ -16,7 +16,7 @@ from torch.autograd import Variable
 
 
 def train(net, inputs_list, num_epochs):
-    f = open("plots/0.1r_noOutScale_bone_gating_256h_fc_record.txt", "w")
+    f = open("data/plots/0.1r_OutScale_bone_gating_256h_fc_record.txt", "w")
     input_mean, input_std = get_norm("/home/rr/Downloads/nsm_data/utils/inputNorm.txt")
     output_mean, output_std = get_norm("/home/rr/Downloads/nsm_data/utils/OutputNorm.txt")
     input_mean, input_std = input_mean[0:926], input_std[0:926]
@@ -43,9 +43,9 @@ def train(net, inputs_list, num_epochs):
 
                 # 标准化
                 t_input_data = torch.Tensor((np.array(train_input_data).astype('float32') - input_mean) / input_std)
-                # t_label_data = torch.Tensor((np.array(train_label_data).astype('float32') - output_mean) / output_std)
+                t_label_data = torch.Tensor((np.array(train_label_data).astype('float32') - output_mean) / output_std)
 
-                t_label_data = torch.Tensor(np.array(train_label_data))
+                # t_label_data = torch.Tensor(np.array(train_label_data))
 
                 t_input_data = Variable(t_input_data.type(torch.FloatTensor).to(torch.device("cuda:0")))
                 t_label_data = Variable(t_label_data.type(torch.FloatTensor).to(torch.device("cuda:0")))
@@ -75,8 +75,8 @@ def train(net, inputs_list, num_epochs):
         f.flush()
 
         if epoch == 60:
-            torch.save(net.model.state_dict(), os.path.join("models/", "fcn_fixedOutScale_"+str(epoch)+".pth"))
-            torch.save(net.optimizer.state_dict(), os.path.join("models/", "fcn_fixedOutScale_opt_"+str(epoch)+".pth"))
+            torch.save(net.model.state_dict(), os.path.join("models/", "fcn_0.1lr_OutScale_"+str(epoch)+".pth"))
+            torch.save(net.optimizer.state_dict(), os.path.join("models/", "fcn_0.1lr_OutScale_opt_"+str(epoch)+".pth"))
     f.close()
 
 
